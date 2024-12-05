@@ -1,26 +1,40 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { Link, useNavigate } from "react-router-dom"
+import { useToast } from "@/hooks/use-toast"
 
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-
-
 import { Button } from "@/components/ui/button"
-
 import { SignupValidationSchema } from '@/lib/validation'
 import Loader from "@/components/shared/Loader"
+import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutations"
+import { useUserContext } from "@/context/AuthContext"
 
 const SignupForm = () => {
-    const isLoading = false;
+    const { toast } = useToast();
+    const { checkAuthUser,
+        // isLoading: isUserLoading 
+    } = useUserContext();
+    const navigate = useNavigate();
+
+    const {
+        mutateAsync: signInAccount,
+        // isPending: isSigningIn 
+    } = useSignInAccount();
+
+
+    const {
+        mutateAsync: createUserAccount,
+        isPending: isCreatingUser } = useCreateUserAccount();
 
 
     // 1. Define your form.
@@ -35,10 +49,37 @@ const SignupForm = () => {
     })
 
     // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof SignupValidationSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof SignupValidationSchema>) {
+        const newUser = await createUserAccount(values);
+
+        if (!newUser) {
+            return toast({
+                title: "Sign up failed. Please try again",
+            })
+        }
+
+        const session = await signInAccount({
+            email: values.email,
+            password: values.password,
+        });
+
+        if (!session) {
+            return toast({
+                title: "Sign in failed. Please try again",
+            })
+        }
+
+        const isLoggedIn = await checkAuthUser();
+
+        if (isLoggedIn) {
+            form.reset();
+            navigate('/');
+        } else {
+            return toast({
+                title: "Sign in failed. Please try again",
+            })
+        }
+
     }
 
 
@@ -46,8 +87,12 @@ const SignupForm = () => {
         <Form {...form}>
             <div className="sm:w-420 flex-center flex-col">
                 <img src="/assets/images/logo.svg" alt="" />
-                <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">Create a new account</h2>
-                <p className="text-light-3 small-medium md:base-regular">To use Snapgram, please enter your details</p>
+                <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">
+                    Create a new account
+                </h2>
+                <p className="text-light-3 small-medium md:base-regular">
+                    To use Snapgram, please enter your details
+                </p>
 
 
                 <form
@@ -126,12 +171,17 @@ const SignupForm = () => {
                         type="submit"
                         className="shad-button_primary"
                     >
-                        {isLoading ? (
+                        {isCreatingUser ? (
                             <div className="flex-center gap-2">
                                 <Loader /> Loading...
                             </div>
                         ) : 'Sign up'}
                     </Button>
+
+                    <p className="text-small-regular text-light-2 text-center-mt-2 flex flex-center">
+                        Already have an account?
+                        <Link to="/sign-in" className="text-primary-500 text-small-semibold ml-1">Log in</Link>
+                    </p>
                 </form>
             </div>
         </Form>

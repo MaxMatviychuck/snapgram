@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import { Toaster } from "@/components/ui/toaster"
 
 import { Home } from './_root/pages';
 import SigninForm from "./_auth/forms/SigninForm";
@@ -23,6 +24,8 @@ export const App = () => {
           <Route index element={<Home />} />
         </Route>
       </Routes>
+
+      <Toaster />
     </main>
   )
 }
