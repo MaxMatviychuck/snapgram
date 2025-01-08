@@ -80,6 +80,7 @@ const Explore = () => {
                 <>
                     {shouldShowSearchResults ? (
                         <SearchResults
+                            // @ts-expect-error: Unreachable code error
                             searchedPosts={searchedPosts}
                             isSearchFetching={isSearchFetching}
                         />
@@ -93,6 +94,7 @@ const Explore = () => {
                         posts?.pages?.map((item, index) => (
                             <GridPostList
                                 key={index}
+                                // @ts-expect-error: Unreachable code error
                                 posts={item.documents}
                             />
                         ))

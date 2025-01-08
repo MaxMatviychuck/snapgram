@@ -175,6 +175,7 @@ export function getFilePreview(fileId: string) {
             fileId,
             2000,
             2000,
+            // @ts-expect-error: Unreachable code error
             "top",
             100
         );

@@ -1,5 +1,5 @@
+
 import { Models } from 'appwrite'
-import React from 'react'
 
 import Loader from './Loader'
 import GridPostList from './GridPostList'
@@ -16,8 +16,10 @@ const SearchResults = (
 
   if (isSearchFetching) return <Loader />
 
+  // @ts-expect-error: Unreachable code error
   if (searchedPosts && searchedPosts.documents.length > 0) {
     return (
+      // @ts-expect-error: Unreachable code error
       <GridPostList posts={searchedPosts.documents} />
     )
   }

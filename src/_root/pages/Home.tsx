@@ -9,7 +9,7 @@ const Home = () => {
   const {
     data: posts,
     isPending: isPostLoading,
-    isError: isErrorPosts
+    // isError: isErrorPosts
   } = useGetRecentPosts();
 
   // console.log(posts);
