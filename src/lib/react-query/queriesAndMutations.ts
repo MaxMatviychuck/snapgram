@@ -10,7 +10,8 @@ import {
     updatePost,
     deletePost,
     getInfinitePosts,
-    searchPosts
+    searchPosts,
+    getUsers,
 } from '../appwrite/api';
 import { INewUser, INewPost, IUpdatePost } from '@/types';
 
@@ -187,5 +188,12 @@ export const useSearchPosts = (searchTerm: string) => {
         queryFn: () => searchPosts(searchTerm),
         enabled: !!searchTerm,
     })
+}
+
+export const useGetUsers = () => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_USERS],
+        queryFn: getUsers,
+    });
 }
 
