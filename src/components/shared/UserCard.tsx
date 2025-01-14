@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const UserCard = ({ creator }: any) => {
-    console.log(creator)
     return (
         <>
             <Link

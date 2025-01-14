@@ -4,8 +4,9 @@ import Loader from "@/components/shared/Loader"
 import UserCard from '@/components/shared/UserCard';
 
 const AllUsers = () => {
-  const { data: users, isFetching } = useGetUsers();
+  const { data: users, isPending } = useGetUsers();
 
+  if (isPending) return <Loader />
 
   return (
     <div className="people-container">
@@ -21,7 +22,7 @@ const AllUsers = () => {
 
 
         <div className='test flex flex-start gap-9 mt-5 flex-wrap'>
-          {isFetching ? <Loader /> :
+          {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             users && users.documents.map((creator: any) => (
               <UserCard key={creator.$id} creator={creator} />

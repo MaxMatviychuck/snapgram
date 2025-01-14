@@ -12,8 +12,10 @@ import {
     getInfinitePosts,
     searchPosts,
     getUsers,
+    getSavedPosts,
+    updateProfile,
 } from '../appwrite/api';
-import { INewUser, INewPost, IUpdatePost } from '@/types';
+import { INewUser, INewPost, IUpdatePost, IUpdateUser } from '@/types';
 
 import { QUERY_KEYS } from './queryKeys'
 
@@ -197,3 +199,23 @@ export const useGetUsers = () => {
     });
 }
 
+export const useGetSavedPosts = (userId: string) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_SAVED_POSTS, userId],
+        queryFn: () => getSavedPosts(userId),
+    });
+};
+
+export const useUpdateProfile = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (profile: IUpdateUser) => updateProfile(profile),
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+            });
+        },
+    });
+};

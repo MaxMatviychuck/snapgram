@@ -25,6 +25,7 @@ const LeftSidebar = () => {
     signOut();
   }
 
+  const isUserProfileLinkActive = pathname.includes(`/profile/${user.id}`);
 
   return (
     <nav className="leftsidebar">
@@ -40,8 +41,12 @@ const LeftSidebar = () => {
 
         <Link
           to={`/profile/${user.id}`}
-          className="flex gap-3 items-center"
+          className={'flex gap-3 items-center relative'}
         >
+          {isUserProfileLinkActive && <div
+            className="absolute bg-[#877EFF] left-[-70px] w-[56px] h-[56px] rounded-full"
+          />
+          }
           <img src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
             alt=""
             className="h-14 w-14 rounded-full"

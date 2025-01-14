@@ -1,8 +1,11 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 import { IContextType, IUser } from '@/types';
-import { getCurrentUser } from '@/lib/appwrite/api';
+
+import {
+    useGetCurrentUser,
+} from "@/lib/react-query/queriesAndMutations";
 
 
 const INITIAL_USER = {
@@ -28,21 +31,15 @@ const AuthContext = createContext<IContextType>(INITIAL_STATE);
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const navigate = useNavigate();
 
+    const { data: currentAccount } = useGetCurrentUser();
+
+
     const [user, setUser] = useState<IUser>(INITIAL_USER);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (localStorage.getItem('cookieFallback') === null || localStorage.getItem('cookieFallback') === '[]') {
-            navigate('/sign-in');
-        }
-
-        checkAuthUser();
-    }, []);
-
-    const checkAuthUser = async () => {
+    const checkAuthUser = useCallback(async () => {
         try {
-            const currentAccount = await getCurrentUser();
 
             if (currentAccount) {
                 setUser({
@@ -66,7 +63,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setIsLoading(false);
         }
 
-    };
+    }, [currentAccount]);
+
+    useEffect(() => {
+        if (localStorage.getItem('cookieFallback') === null || localStorage.getItem('cookieFallback') === '[]') {
+            navigate('/sign-in');
+        }
+
+        checkAuthUser();
+    }, [navigate, currentAccount, checkAuthUser]);
 
     const value = {
         user,

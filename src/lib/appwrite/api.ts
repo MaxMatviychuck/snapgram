@@ -1,6 +1,6 @@
 import { ID, Query } from 'appwrite';
 
-import { INewUser, INewPost, IUpdatePost } from '@/types';
+import { INewUser, INewPost, IUpdatePost, IUpdateUser } from '@/types';
 import { account, appwriteConfig, avatars, databases, storage } from './config';
 
 export async function createUserAccount(user: INewUser) {
@@ -420,6 +420,82 @@ export async function getUsers() {
 
         return users;
 
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function getSavedPosts(userId: string) {
+    if (!userId) return;
+
+    try {
+        const savedPosts = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.savesCollectionId,
+            [Query.equal('users', userId)]
+        );
+
+        if (!savedPosts) throw Error;
+
+        const formattedSavedPosts = savedPosts.documents.map((savedPost) => {
+            return savedPost.posts;
+        });
+
+        return {
+            total: savedPosts.total,
+            documents: formattedSavedPosts
+        };
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function updateProfile(profile: IUpdateUser) {
+    const hasFileToUpdate = profile.file.length > 0;
+
+    try {
+        let image = {
+            imageUrl: profile.imageUrl,
+            imageId: profile.imageId
+        }
+
+        if (hasFileToUpdate) {
+
+            const uploadedFile = await uploadFile(profile.file[0]);
+
+            if (!uploadedFile) throw Error;
+
+            const fileUrl = getFilePreview(uploadedFile.$id);
+
+            if (!fileUrl) {
+                await deleteFile(uploadedFile.$id);
+                throw Error;
+            }
+
+            image = {
+                ...image,
+                imageUrl: fileUrl as unknown as URL,
+                imageId: uploadedFile.$id
+            };
+
+        }
+
+        const updatedProfile = await databases.updateDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.usersCollectionId,
+            profile.userId,
+            {
+                bio: profile.bio,
+                imageUrl: image.imageUrl,
+                imageId: image.imageId,
+                name: profile.name,
+                username: profile.username,
+                email: profile.email
+            }
+        );
+
+        return updatedProfile;
     } catch (error) {
         console.error(error);
     }

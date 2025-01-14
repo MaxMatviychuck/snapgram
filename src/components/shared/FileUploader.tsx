@@ -6,9 +6,10 @@ import { Button } from '../ui/button';
 interface FileUploaderProps {
     fieldChange: (files: File[]) => void
     mediaUrl: string
+    type?: 'profile' | 'post'
 }
 
-const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
+const FileUploader = ({ fieldChange, mediaUrl, type = 'post' }: FileUploaderProps) => {
     const [file, setFile] = useState<File[]>([])
     const [fileUrl, setFileUrl] = useState(mediaUrl)
 
@@ -31,7 +32,7 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
     return (
         <div
             {...getRootProps()}
-            className='flex flex-center flex-col bg-dark-3 rounded-xl cursor-pointer'
+            className={`flex flex-center cursor-pointer ${type === 'profile' && 'w-fit'} ${type === 'post' && 'flex-col bg-dark-3 rounded-xl'}`}
         >
             <input
                 {...getInputProps()}
@@ -41,23 +42,18 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
                 fileUrl ? (
                     <>
                         <div
-                            className='
-                        flex
-                        flex-1
-                        justify-center
-                        w-full
-                        p-5
-                        lg:p-10
-                        '
+                            className={` ${type === 'profile' && 'rounded-full flex-auto w-[200px]'} flex flex-1 justify-center ${type === 'post' && 'p-5 lg:p-10 w-full'}`}
                         >
-                            <img src={fileUrl} alt="" className='file_uploader-img' />
+                            <img src={fileUrl} alt="" className={type === 'profile' ? 'profile_file_uploader-img' : 'file_uploader-img'} />
                         </div>
-                        <p className='file_uploader-label'>Click or drag photo to replace</p>
+                        <p className={type === 'profile' ? 'profile_file_uploader-label' : 'file_uploader-label'}>
+                            {type === 'profile' ? 'Change profile photo' : 'Click or drag photo to replace'}
+                        </p>
                     </>
 
 
                 ) : (
-                    <div className='file_uploader-box'>
+                    type === 'post' && <div className='file_uploader-box'>
                         <img src="/assets/icons/file-upload.svg" width={96} height={77} alt="" />
                         <h3 className='base-medium text-light-2 mb-2 mt-6'>Drag photo here</h3>
                         <p className='text-light-4 small-regular mb-6'>SVG, PNG, JPG</p>
