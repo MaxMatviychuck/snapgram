@@ -500,3 +500,22 @@ export async function updateProfile(profile: IUpdateUser) {
         console.error(error);
     }
 }
+
+export async function getPostsByUserId(userId: string) {
+    if (!userId) return;
+
+    try {
+        const savedPosts = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.postsCollectionId,
+            [Query.equal('creator', userId)]
+        );
+
+        if (!savedPosts) throw Error;
+
+        return savedPosts;
+
+    } catch (error) {
+        console.error(error);
+    }
+}

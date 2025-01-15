@@ -20,4 +20,6 @@ export enum QUERY_KEYS {
 
     // SAVED POST KEYS
     GET_SAVED_POSTS = "getSavedPosts",
+
+    GET_POSTS_BY_USER_ID = "getPostsByUserId",
 }

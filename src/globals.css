@@ -227,6 +227,10 @@
     @apply w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-7 max-w-5xl;
   }
 
+  .one-column-grid-container {
+    @apply w-full grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-7 max-w-5xl;
+  }
+
   .grid-post_link {
     @apply flex rounded-[24px] border border-dark-4 overflow-hidden cursor-pointer w-full h-full;
   }
@@ -245,7 +249,8 @@
   }
 
   .rightsidebar {
-    @apply hidden md:flex px-6 py-10 flex-col justify-between min-w-[270px] max-w-[465px] bg-dark-2;
+    @apply hidden lg:flex px-6 py-10 flex-col justify-between min-w-[270px] max-w-[465px] lg:w-[565px] bg-dark-2;
+    /* @apply w-full grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-7 max-w-5xl; */
   }
 
   .rightsidebar-link {

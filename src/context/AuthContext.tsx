@@ -31,12 +31,11 @@ const AuthContext = createContext<IContextType>(INITIAL_STATE);
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const navigate = useNavigate();
 
-    const { data: currentAccount } = useGetCurrentUser();
+    const { data: currentAccount, isPending: isLoading } = useGetCurrentUser();
 
 
     const [user, setUser] = useState<IUser>(INITIAL_USER);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const checkAuthUser = useCallback(async () => {
         try {
@@ -59,8 +58,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } catch (error) {
             console.error(error);
             return false;
-        } finally {
-            setIsLoading(false);
         }
 
     }, [currentAccount]);

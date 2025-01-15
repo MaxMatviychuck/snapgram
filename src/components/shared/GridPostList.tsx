@@ -1,7 +1,7 @@
 import { Models } from 'appwrite'
 
 import { useUserContext } from '@/context/AuthContext'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import PostStats from './PostStats'
 
 
@@ -17,11 +17,13 @@ const GridPostList = (
     showUser = true,
     showStats = true
   }: GridPostListProps) => {
-
+  const { pathname } = useLocation();
   const { user } = useUserContext();
 
+  const isProfile = pathname.includes(`/profile/${user.id}`);
+
   return (
-    <ul className='grid-container'>
+    <ul className={isProfile ? 'one-column-grid-container' : 'grid-container'}>
       {posts.map((post) => (
         <li
           key={post.$id}
@@ -38,7 +40,7 @@ const GridPostList = (
             />
           </Link>
 
-          <div
+          {!isProfile && <div
             className='grid-post_user'
           >
             {showUser && (
@@ -56,7 +58,7 @@ const GridPostList = (
                 userId={user.id}
                 post={post} />
             )}
-          </div>
+          </div>}
         </li>
       ))}
     </ul>

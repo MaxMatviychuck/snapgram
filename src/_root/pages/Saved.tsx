@@ -8,8 +8,6 @@ const Saved = () => {
 
   const { data: savedPosts, isPending } = useGetSavedPosts(user?.id);
 
-  console.log("savedPosts", savedPosts);
-
   if (isPending) return <Loader />
 
   return (

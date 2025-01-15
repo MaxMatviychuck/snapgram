@@ -16,13 +16,13 @@ import { useToast } from "@/hooks/use-toast"
 const ProfileForm = () => {
     const { toast } = useToast();
     const { pathname } = useLocation();
+    const { user } = useUserContext();
 
-    const isProfile = pathname.includes('/profile');
+    const isProfile = pathname.includes(`/profile/${user.id}`);
 
     const { mutateAsync: updateProfile, isPending: isLoadingUpdateProfile }
         = useUpdateProfile();
 
-    const { user } = useUserContext();
     console.log('user', user);
 
     const form = useForm<z.infer<typeof ProfileValidationSchema>>({
